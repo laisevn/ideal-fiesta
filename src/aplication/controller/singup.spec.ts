@@ -1,3 +1,4 @@
+import { MissingParamsError } from '../presentation/errors/missingParamsError'
 import { SingUpController } from './singup'
 
 describe('SingUpController', () => {
@@ -12,7 +13,7 @@ describe('SingUpController', () => {
     const httpResponse = controller.handle(httpResquest)
 
     expect(httpResponse.statusCode).toBe(400)
-    expect(httpResponse.body).toEqual(new Error('email is required'))
+    expect(httpResponse.body).toEqual(new MissingParamsError('email'))
   })
 
   test('Should return 400 if no password is provided', () => {
@@ -26,6 +27,6 @@ describe('SingUpController', () => {
     const httpResponse = controller.handle(httpResquest)
 
     expect(httpResponse.statusCode).toBe(400)
-    expect(httpResponse.body).toEqual(new Error('password is required'))
+    expect(httpResponse.body).toEqual(new MissingParamsError('password'))
   })
 })
