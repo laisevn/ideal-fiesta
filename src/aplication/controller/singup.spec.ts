@@ -1,8 +1,6 @@
-import { MissingParamsError } from '../presentation/errors/missingParamsError'
+import { MissingParamsError, ServerError, InvalidParamsError} from '../presentation/errors'
 import { SingUpController } from './singup'
-import { InvalidParamsError } from '../presentation/errors/invalidParamError'
-import { IEmailValidator } from '../presentation/IEmailValidator'
-
+import { IEmailValidator } from '../presentation/protocols'
 
 interface ControllerTypes {
   controller: SingUpController
@@ -70,7 +68,7 @@ describe('SingUpController', () => {
     expect(httpResponse.body).toEqual(new InvalidParamsError('email'))
   })
 
-  test('Should call IEmailValidator with correct email', () => {
+  test('Should call EmailValidator with correct email', () => {
     const { controller, emailValidatorStub } = makeController()
     const isValidSpy = jest.spyOn(emailValidatorStub, 'isValid')
 
@@ -84,5 +82,27 @@ describe('SingUpController', () => {
 
     controller.handle(httpResquest)
     expect(isValidSpy).toHaveBeenCalledWith('oneemail@email.com')
+  })
+
+  test('Should return 500 if EmailValidator throws', () => {
+    class EmailValidatorStub implements IEmailValidator {
+      isValid (email: string): boolean {
+        throw new Error()
+      }
+    }
+    const emailValidatorStub = new EmailValidatorStub()
+    const controller = new SingUpController(emailValidatorStub)
+
+    const httpResquest = {
+      body: {
+        displayName: 'Fulano de Tal',
+        email: 'invalid_oneemail@email.com',
+        password: 'one_password'
+      }
+    }
+    const httpResponse = controller.handle(httpResquest)
+
+    expect(httpResponse.statusCode).toBe(500)
+    expect(httpResponse.body).toEqual(new ServerError())
   })
 })

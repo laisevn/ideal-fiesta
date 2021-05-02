@@ -1,10 +1,7 @@
-import { IHttpResponse } from '../presentation/IHttpResponse'
-import { IHttpRequest } from '../presentation/IHttpRequest'
-import { MissingParamsError } from '../presentation/errors/missingParamsError'
-import { badRequest } from '../presentation/helpers/httpHelper'
-import { IController } from '../presentation/IController'
-import { IEmailValidator } from '../presentation/IEmailValidator'
-import { InvalidParamsError } from '../presentation/errors/invalidParamError'
+import { IHttpResponse, IHttpRequest, IEmailValidator, IController } from '../presentation/protocols'
+import { MissingParamsError, ServerError, InvalidParamsError } from '../presentation/errors'
+import { badRequest, serverError } from '../presentation/helpers/httpHelper'
+import { Console } from 'node:console'
 
 export class SingUpController implements IController {
   private readonly emailValidator: IEmailValidator
@@ -14,18 +11,22 @@ export class SingUpController implements IController {
   }
 
   handle (httpResquest: IHttpRequest): IHttpResponse {
-    const requiredFields = ['email', 'password']
+    try {
+      const requiredFields = ['email', 'password']
 
-    for (const field of requiredFields) {
-      if (!httpResquest.body[field]) {
-        return badRequest(new MissingParamsError(field))
+      for (const field of requiredFields) {
+        if (!httpResquest.body[field]) {
+          return badRequest(new MissingParamsError(field))
+        }
       }
-    }
 
-    const isValid = this.emailValidator.isValid(httpResquest.body.email)
+      const isValid = this.emailValidator.isValid(httpResquest.body.email)
 
-    if (!isValid) {
-      return badRequest(new InvalidParamsError('email'))
+      if (!isValid) {
+        return badRequest(new InvalidParamsError('email'))
+      }
+    } catch (error) {
+      return serverError()
     }
   }
 }
