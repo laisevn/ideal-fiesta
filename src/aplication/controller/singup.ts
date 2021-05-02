@@ -1,13 +1,15 @@
-import { IHttpResponse, IHttpRequest, IEmailValidator, IController } from '../presentation/protocols'
-import { MissingParamsError, ServerError, InvalidParamsError } from '../presentation/errors'
+import { IHttpResponse, IHttpRequest, IEmailValidator, IController, IPasswordValidator } from '../presentation/protocols'
+import { MissingParamsError, ServerError, InvalidParamsError, InvalidPasswordError } from '../presentation/errors'
 import { badRequest, serverError } from '../presentation/helpers/httpHelper'
 import { Console } from 'node:console'
 
 export class SingUpController implements IController {
   private readonly emailValidator: IEmailValidator
+  private readonly passwordValidator: IPasswordValidator
 
-  constructor (emailValidator: IEmailValidator) {
+  constructor (emailValidator: IEmailValidator, passwordValidator: IPasswordValidator) {
     this.emailValidator = emailValidator
+    this.passwordValidator = passwordValidator
   }
 
   handle (httpResquest: IHttpRequest): IHttpResponse {
@@ -19,10 +21,16 @@ export class SingUpController implements IController {
           return badRequest(new MissingParamsError(field))
         }
       }
+      const { email, password } = httpResquest.body
+      const isValidEmail = this.emailValidator.isValid(email)
 
-      const isValid = this.emailValidator.isValid(httpResquest.body.email)
+      const isValidPassword = this.passwordValidator.isValid(password)
 
-      if (!isValid) {
+      if (!isValidPassword) {
+        return badRequest(new InvalidPasswordError('password'))
+      }
+
+      if (!isValidEmail) {
         return badRequest(new InvalidParamsError('email'))
       }
     } catch (error) {

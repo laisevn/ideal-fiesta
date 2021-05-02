@@ -1,5 +1,4 @@
-import { IHttpRequest } from '../presentation/IHttpRequest'
-import { IHttpResponse } from '../presentation/IHttpResponse'
+import { IHttpRequest, IHttpResponse } from '../protocols'
 
 export interface IController {
   handle: (httpResquest: IHttpRequest) => IHttpResponse
