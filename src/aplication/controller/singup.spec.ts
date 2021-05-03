@@ -174,4 +174,24 @@ describe('SingUpController', () => {
       image: 'valid_url'
     })
   })
+
+  test('Should return 500 if IAddAccount throws', () => {
+    const { controller, addAccountStub } = makeController()
+    jest.spyOn(addAccountStub, 'add').mockImplementationOnce(() => {
+      throw new Error()
+    })
+
+    const httpResquest = {
+      body: {
+        displayName: 'Fulano de Tal',
+        email: 'invalid_oneemail@email.com',
+        image: 'https://images.pexels.com/photos/2777898/pexels-photo-2777898.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500',
+        password: 'one_password'
+      }
+    }
+    const httpResponse = controller.handle(httpResquest)
+
+    expect(httpResponse.statusCode).toBe(500)
+    expect(httpResponse.body).toEqual(new ServerError())
+  })
 })
