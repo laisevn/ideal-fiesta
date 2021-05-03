@@ -1,11 +1,15 @@
 import { MissingParamsError, ServerError, InvalidParamsError, InvalidPasswordError } from '../presentation/errors'
 import { SingUpController } from './singup'
 import { IEmailValidator, IPasswordValidator } from '../presentation/protocols'
+import { IAddAccount } from '../../domain/usecases/IAddAcount'
+import { IAddAccountModel } from '../../domain/usecases/IAddAccountModel'
+import { IAccountModel } from '../../domain/models/IAccountModel'
 
 interface ControllerTypes {
   controller: SingUpController
   emailValidatorStub: IEmailValidator
-  passwordValidatorStub: IPasswordValidator
+  passwordValidatorStub: IPasswordValidator,  
+  addAccountStub: IAddAccount
 }
 
 const makeController = (): ControllerTypes => {
@@ -19,15 +23,27 @@ const makeController = (): ControllerTypes => {
       return true
     }
   }
+  class AddAccountStub implements IAddAccount {
+    add (account: IAddAccountModel): IAccountModel {
+      const fakeAccount = {
+        id: 'valid_id',
+        displayName: 'Fulano de Tal',
+        email: 'invalid_oneemail@email.com',
+        password: 'valid_password',
+        image: 'valid_url'
+      }
+    }
+  }
   const passwordValidatorStub = new PasswordValidatorStub()
-
   const emailValidatorStub = new EmailValidatorStub()
-  const controller = new SingUpController(emailValidatorStub, passwordValidatorStub)
+  const addAccountStub = new AddAccountStub()
+  const controller = new SingUpController(emailValidatorStub, passwordValidatorStub, addAccountStub)
 
   return {
     controller,
     emailValidatorStub,
-    passwordValidatorStub
+    passwordValidatorStub,
+    addAccountStub
   }
 }
 
@@ -37,6 +53,7 @@ describe('SingUpController', () => {
     const httpResquest = {
       body: {
         displayName: 'Fulano de Tal',
+        image: 'https://images.pexels.com/photos/2777898/pexels-photo-2777898.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500',
         password: 'one_password'
       }
     }
@@ -51,6 +68,7 @@ describe('SingUpController', () => {
     const httpResquest = {
       body: {
         displayName: 'Fulano de Tal',
+        image: 'https://images.pexels.com/photos/2777898/pexels-photo-2777898.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500',
         email: 'oneemail@email.com'
       }
     }
@@ -68,6 +86,7 @@ describe('SingUpController', () => {
       body: {
         displayName: 'Fulano de Tal',
         email: 'invalid_oneemail@email.com',
+        image: 'https://images.pexels.com/photos/2777898/pexels-photo-2777898.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500',
         password: 'one_password'
       }
     }
@@ -85,6 +104,7 @@ describe('SingUpController', () => {
       body: {
         displayName: 'Fulano de Tal',
         email: 'oneemail@email.com',
+        image: 'https://images.pexels.com/photos/2777898/pexels-photo-2777898.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500',
         password: 'one_password'
       }
     }
@@ -106,6 +126,7 @@ describe('SingUpController', () => {
       body: {
         displayName: 'Fulano de Tal',
         email: 'invalid_oneemail@email.com',
+        image: 'https://images.pexels.com/photos/2777898/pexels-photo-2777898.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500',
         password: 'one_password'
       }
     }
@@ -123,6 +144,7 @@ describe('SingUpController', () => {
       body: {
         displayName: 'Fulano de Tal',
         email: 'invalid_oneemail@email.com',
+        image: 'https://images.pexels.com/photos/2777898/pexels-photo-2777898.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500',
         password: 'short_password'
       }
     }
@@ -130,5 +152,26 @@ describe('SingUpController', () => {
 
     expect(httpResponse.statusCode).toBe(400)
     expect(httpResponse.body).toEqual(new InvalidPasswordError('password'))
+  })
+
+  test('Should call AddAccount with correct values', () => {
+    const { controller, addAccountStub } = makeController()
+    const addSpy = jest.spyOn(addAccountStub, 'add')
+
+    const httpResquest = {
+      body: {
+        displayName: 'Fulano de Tal',
+        email: 'invalid_oneemail@email.com',
+        password: 'valid_password',
+        image: 'valid_url'
+      }
+    }
+    controller.handle(httpResquest)
+    expect(addSpy).toBeCalledWith({
+      displayName: 'Fulano de Tal',
+      email: 'invalid_oneemail@email.com',
+      password: 'valid_password',
+      image: 'valid_url'
+    })
   })
 })

@@ -2,14 +2,21 @@ import { IHttpResponse, IHttpRequest, IEmailValidator, IController, IPasswordVal
 import { MissingParamsError, ServerError, InvalidParamsError, InvalidPasswordError } from '../presentation/errors'
 import { badRequest, serverError } from '../presentation/helpers/httpHelper'
 import { Console } from 'node:console'
+import { IAddAccount } from '../../domain/usecases/IAddAcount'
+
 
 export class SingUpController implements IController {
   private readonly emailValidator: IEmailValidator
   private readonly passwordValidator: IPasswordValidator
+  private readonly addAccount: IAddAccount
 
-  constructor (emailValidator: IEmailValidator, passwordValidator: IPasswordValidator) {
+  constructor (
+    emailValidator: IEmailValidator, passwordValidator: IPasswordValidator,
+    addAccount: IAddAccount
+  ) {
     this.emailValidator = emailValidator
     this.passwordValidator = passwordValidator
+    this.addAccount = addAccount
   }
 
   handle (httpResquest: IHttpRequest): IHttpResponse {
@@ -21,7 +28,7 @@ export class SingUpController implements IController {
           return badRequest(new MissingParamsError(field))
         }
       }
-      const { email, password } = httpResquest.body
+      const { displayName, email, password, image } = httpResquest.body
       const isValidEmail = this.emailValidator.isValid(email)
 
       const isValidPassword = this.passwordValidator.isValid(password)
@@ -33,6 +40,13 @@ export class SingUpController implements IController {
       if (!isValidEmail) {
         return badRequest(new InvalidParamsError('email'))
       }
+
+      this.addAccount.add({
+        displayName,
+        email,
+        password,
+        image
+      })
     } catch (error) {
       return serverError()
     }
