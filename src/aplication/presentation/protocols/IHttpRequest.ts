@@ -1,6 +1,6 @@
 // Interface for resquest with param body as optional for get routes
 
-export interface HttpRequest {
+export interface IHttpRequest {
   body?: any
 }
 
