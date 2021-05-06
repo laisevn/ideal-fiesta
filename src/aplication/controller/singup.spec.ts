@@ -25,7 +25,7 @@ const makeController = (): ControllerTypes => {
   }
   class AddAccountStub implements IAddAccount {
     add (account: IAddAccountModel): IAccountModel {
-      const fakeAccount = {
+      {
         id: 'valid_id',
         displayName: 'Fulano de Tal',
         email: 'invalid_oneemail@email.com',
@@ -119,8 +119,10 @@ describe('SingUpController', () => {
         throw new Error()
       }
     }
+    const passwordValidatorStub = makeController().passwordValidatorStub
     const emailValidatorStub = new EmailValidatorStub()
-    const controller = new SingUpController(emailValidatorStub)
+    const addAccountStub = makeController().addAccountStub
+    const controller = new SingUpController(emailValidatorStub, passwordValidatorStub, addAccountStub)
 
     const httpResquest = {
       body: {
