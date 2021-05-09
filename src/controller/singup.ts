@@ -1,8 +1,7 @@
 import { IHttpResponse, IHttpRequest, IEmailValidator, IController, IPasswordValidator } from '../presentation/protocols'
-import { MissingParamsError, ServerError, InvalidParamsError, InvalidPasswordError } from '../presentation/errors'
+import { MissingParamsError, InvalidParamsError, InvalidPasswordError } from '../presentation/errors'
 import { badRequest, serverError, okResponse } from '../presentation/helpers/httpHelper'
-import { Console } from 'node:console'
-import { IAddAccount } from '../../domain/usecases/IAddAcount'
+import { IAddAccount } from '../domain/usecases/IAddAcount'
 
 export class SingUpController implements IController {
   private readonly emailValidator: IEmailValidator
@@ -49,7 +48,7 @@ export class SingUpController implements IController {
       return okResponse(account)
     } catch (error) {
       return serverError()
-      console.error(error)
+      console.error(errors)
     }
   }
 }

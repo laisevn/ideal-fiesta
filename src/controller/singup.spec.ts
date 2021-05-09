@@ -1,9 +1,9 @@
 import { MissingParamsError, ServerError, InvalidParamsError, InvalidPasswordError } from '../presentation/errors'
 import { SingUpController } from './singup'
 import { IEmailValidator, IPasswordValidator } from '../presentation/protocols'
-import { IAddAccount } from '../../domain/usecases/IAddAcount'
-import { IAddAccountModel } from '../../domain/usecases/IAddAccountModel'
-import { IAccountModel } from '../../domain/models/IAccountModel'
+import { IAddAccount } from '../domain/usecases/IAddAcount'
+import { IAddAccountModel } from '../domain/usecases/IAddAccountModel'
+import { IAccountModel } from '../domain/models/IAccountModel'
 
 interface ControllerTypes {
   controller: SingUpController
