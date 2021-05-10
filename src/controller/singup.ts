@@ -48,7 +48,7 @@ export class SingUpController implements IController {
       return okResponse(account)
     } catch (error) {
       return serverError()
-      console.error(errors)
+      console.error(error)
     }
   }
 }
