@@ -1,3 +1,3 @@
 export interface IPasswordValidator {
-  isValid: (password: string) => boolean
+  isMinLenght: (password: string) => boolean
 }

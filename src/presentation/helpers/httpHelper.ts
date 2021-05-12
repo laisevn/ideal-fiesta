@@ -6,7 +6,7 @@ export const badRequest = (error: Error): IHttpResponse => ({
   body: error
 })
 
-export const serverError = () => ({
+export const serverError = (): any => ({
   statusCode: 500,
   body: new ServerError()
 })

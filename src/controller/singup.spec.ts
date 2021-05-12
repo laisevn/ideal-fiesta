@@ -19,7 +19,7 @@ const makeController = (): ControllerTypes => {
     }
   }
   class PasswordValidatorStub implements IPasswordValidator {
-    isValid (password: string): boolean {
+    isMinLenght (password: string): boolean {
       return true
     }
   }
@@ -141,7 +141,7 @@ describe('SingUpController', () => {
 
   test('Should return 400 if password is invalid', async () => {
     const { controller, passwordValidatorStub } = makeController()
-    jest.spyOn(passwordValidatorStub, 'isValid').mockReturnValueOnce(false)
+    jest.spyOn(passwordValidatorStub, 'isMinLenght').mockReturnValueOnce(false)
 
     const httpResquest = {
       body: {

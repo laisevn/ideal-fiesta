@@ -29,7 +29,7 @@ export class SingUpController implements IController {
       const { displayName, email, password, image } = httpResquest.body
       const isValidEmail = this.emailValidator.isValid(email)
 
-      const isValidPassword = this.passwordValidator.isValid(password)
+      const isValidPassword = this.passwordValidator.isMinLenght(password)
 
       if (!isValidPassword) {
         return badRequest(new InvalidPasswordError('password'))
@@ -47,8 +47,8 @@ export class SingUpController implements IController {
       })
       return okResponse(account)
     } catch (error) {
+      console.log(error)
       return serverError()
-      console.error(error)
     }
   }
 }

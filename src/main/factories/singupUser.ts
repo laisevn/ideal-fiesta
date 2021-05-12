@@ -8,10 +8,9 @@ import { PasswordValidatorAdapter } from '../../utils/passwordValidatorAdapter'
 export const makeSingupController = (): SingUpController => {
   const salt = 12
   const emailValidatorAdapter = new EmailValidatorAdapter()
-  const passwordValidatorAdapter = new PasswordValidatorAdapter()
   const bcryptAdapter = new BcryptAdapter(salt)
   const accountMongoRepository = new AccountMongoRepository()
   const dbAccount = new DbAddAccount(bcryptAdapter, accountMongoRepository)
-  const singUpController = new SingUpController(emailValidatorAdapter, dbAccount, passwordValidatorAdapter)
-  return singUpController
+  const passwordValidatorAdapter = new PasswordValidatorAdapter()
+  return new SingUpController(emailValidatorAdapter, passwordValidatorAdapter, dbAccount)
 }
