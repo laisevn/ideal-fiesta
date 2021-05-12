@@ -32,6 +32,8 @@ export class SingUpController implements IController {
       const isValidPassword = this.passwordValidator.isMinLenght(password)
 
       if (!isValidPassword) {
+        const error = new InvalidPasswordError('password')
+        console.log(error)
         return badRequest(new InvalidPasswordError('password'))
       }
 

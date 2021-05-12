@@ -3,9 +3,8 @@ import { IHttpResponse } from '../protocols'
 
 export const badRequest = (error: Error): IHttpResponse => ({
   statusCode: 400,
-  body: error
+  body: error.message
 })
-
 export const serverError = (): any => ({
   statusCode: 500,
   body: new ServerError()
