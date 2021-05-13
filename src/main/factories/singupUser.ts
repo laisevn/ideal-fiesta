@@ -2,10 +2,11 @@ import { SingUpController } from '../../controller/singup'
 import { DbAddAccount } from '../../data/dbAddAccount'
 import { BcryptAdapter } from '../../infra/bcryptAdapter'
 import { AccountMongoRepository } from '../../infra/db/mongodb/accountMongoRepository'
+import { IController } from '../../presentation/protocols'
 import { EmailValidatorAdapter } from '../../utils/emailValidatorAdapter'
 import { PasswordValidatorAdapter } from '../../utils/passwordValidatorAdapter'
 
-export const makeSingupController = (): SingUpController => {
+export const makeSingupController = (): IController => {
   const salt = 12
   const emailValidatorAdapter = new EmailValidatorAdapter()
   const bcryptAdapter = new BcryptAdapter(salt)

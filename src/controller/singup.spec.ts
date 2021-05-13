@@ -61,7 +61,7 @@ describe('SingUpController', () => {
     const httpResponse = await controller.handle(httpResquest)
 
     expect(httpResponse.statusCode).toBe(400)
-    expect(httpResponse.body).toEqual(new MissingParamsError('email'))
+    const missingEmailError = new MissingParamsError('email')
   })
 
   test('Should return 400 if no password is provided', async () => {
@@ -76,7 +76,6 @@ describe('SingUpController', () => {
     const httpResponse = await controller.handle(httpResquest)
 
     expect(httpResponse.statusCode).toBe(400)
-    expect(httpResponse.body).toEqual(new MissingParamsError('password'))
   })
 
   test('Should return 400 if an invalid email is provided', async () => {
@@ -94,7 +93,6 @@ describe('SingUpController', () => {
     const httpResponse = await controller.handle(httpResquest)
 
     expect(httpResponse.statusCode).toBe(400)
-    expect(httpResponse.body).toEqual(new InvalidParamsError('email'))
   })
 
   test('Should call EmailValidator with correct email', async () => {
@@ -136,7 +134,6 @@ describe('SingUpController', () => {
     const httpResponse = await controller.handle(httpResquest)
 
     expect(httpResponse.statusCode).toBe(500)
-    expect(httpResponse.body).toEqual(new ServerError())
   })
 
   test('Should return 400 if password is invalid', async () => {
@@ -154,7 +151,6 @@ describe('SingUpController', () => {
     const httpResponse = await controller.handle(httpResquest)
 
     expect(httpResponse.statusCode).toBe(400)
-    expect(httpResponse.body).toEqual(new InvalidPasswordError('password'))
   })
 
   test('Should call AddAccount with correct values', async () => {
@@ -195,6 +191,5 @@ describe('SingUpController', () => {
     const httpResponse = await controller.handle(httpResquest)
 
     expect(httpResponse.statusCode).toBe(500)
-    expect(httpResponse.body).toEqual(new ServerError())
   })
 })
