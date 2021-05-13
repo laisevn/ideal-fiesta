@@ -21,7 +21,7 @@ Esta estrutura não parece tão produtiva noinício quanto usar diretamento o ex
 				<strong>Languagem:</strong>
 			</td>
 			<td>
-				PHP
+				Typescript
 			</td>
 		</tr>
 		<tr>
